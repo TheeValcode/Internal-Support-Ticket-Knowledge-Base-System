@@ -7,6 +7,7 @@ Phase 2 transforms our local development application into a production-ready clo
 ## Current State (Phase 1) vs Target State (Phase 2)
 
 ### Phase 1: Local Development
+
 ```
 ┌─────────────────┐    ┌─────────────────┐    ┌─────────────────┐
 │   React Client  │────│  Express API    │────│  SQLite DB      │
@@ -21,6 +22,7 @@ Phase 2 transforms our local development application into a production-ready clo
 ```
 
 ### Phase 2: AWS Cloud Deployment
+
 ```
 ┌─────────────────┐    ┌─────────────────┐    ┌─────────────────┐
 │   CloudFront    │────│   EC2 Instance  │────│  SQLite/RDS     │
@@ -39,6 +41,7 @@ Phase 2 transforms our local development application into a production-ready clo
 ### Core Services Required
 
 #### 1. **Amazon S3 (Simple Storage Service)**
+
 - **Purpose**: Host static frontend files and store file attachments
 - **Two Buckets Needed**:
   - `support-ticket-frontend`: React build files (HTML, CSS, JS)
@@ -46,17 +49,20 @@ Phase 2 transforms our local development application into a production-ready clo
 - **Benefits**: 99.999999999% durability, automatic scaling, cost-effective
 
 #### 2. **Amazon EC2 (Elastic Compute Cloud)**
+
 - **Purpose**: Host the Express.js backend API
 - **Instance Type**: t3.micro (free tier eligible)
 - **Configuration**: Node.js runtime, PM2 process manager
 - **Benefits**: Full control, scalable, familiar Linux environment
 
 #### 3. **Amazon CloudFront (CDN)**
+
 - **Purpose**: Global content delivery for frontend
 - **Configuration**: Points to S3 frontend bucket
 - **Benefits**: Faster load times worldwide, HTTPS termination, caching
 
 #### 4. **AWS IAM (Identity and Access Management)**
+
 - **Purpose**: Security and permissions management
 - **Components**: Users, roles, policies for secure access
 - **Benefits**: Fine-grained access control, security best practices
@@ -64,11 +70,13 @@ Phase 2 transforms our local development application into a production-ready clo
 ### Optional Enhancement Services
 
 #### 5. **Amazon RDS (Relational Database Service)**
+
 - **Purpose**: Replace SQLite with managed PostgreSQL/MySQL
 - **Benefits**: Automated backups, scaling, high availability
 - **Migration Path**: Export SQLite → Import to RDS
 
 #### 6. **Amazon SES (Simple Email Service)**
+
 - **Purpose**: Send ticket notification emails
 - **Integration**: Replace console.log with actual email sending
 - **Benefits**: Reliable email delivery, bounce handling
@@ -78,6 +86,7 @@ Phase 2 transforms our local development application into a production-ready clo
 ### Step 1: Infrastructure Setup
 
 #### AWS Account Preparation
+
 ```bash
 # 1. Create AWS account
 # 2. Set up billing alerts
@@ -87,6 +96,7 @@ aws configure
 ```
 
 #### S3 Bucket Creation
+
 ```bash
 # Create frontend hosting bucket
 aws s3 mb s3://your-app-frontend-bucket
@@ -101,6 +111,7 @@ aws s3 website s3://your-app-frontend-bucket \
 ```
 
 #### EC2 Instance Setup
+
 ```bash
 # Launch EC2 instance
 aws ec2 run-instances \
@@ -127,42 +138,46 @@ aws ec2 authorize-security-group-ingress \
 ### Step 2: Code Modifications
 
 #### Frontend Changes
+
 The React frontend requires minimal changes:
 
 ```typescript
 // Before: Local API calls
-const API_BASE_URL = 'http://localhost:5000/api';
+const API_BASE_URL = "http://localhost:5000/api";
 
 // After: Production API calls
-const API_BASE_URL = process.env.REACT_APP_API_URL || 'https://your-ec2-domain.com/api';
+const API_BASE_URL =
+  process.env.REACT_APP_API_URL || "https://your-ec2-domain.com/api";
 ```
 
 #### Backend Changes - File Service Migration
 
 **Current Local File Service:**
+
 ```typescript
 class LocalFileService {
   async uploadFile(file: Buffer, filename: string): Promise<string> {
-    const filePath = path.join('./uploads', filename);
+    const filePath = path.join("./uploads", filename);
     await fs.writeFile(filePath, file);
     return `/uploads/${filename}`;
   }
 
   async downloadFile(filename: string): Promise<Buffer> {
-    const filePath = path.join('./uploads', filename);
+    const filePath = path.join("./uploads", filename);
     return await fs.readFile(filePath);
   }
 
   async deleteFile(filename: string): Promise<void> {
-    const filePath = path.join('./uploads', filename);
+    const filePath = path.join("./uploads", filename);
     await fs.unlink(filePath);
   }
 }
 ```
 
 **New S3 File Service:**
+
 ```typescript
-import AWS from 'aws-sdk';
+import AWS from "aws-sdk";
 
 class S3FileService {
   private s3: AWS.S3;
@@ -172,7 +187,7 @@ class S3FileService {
     this.s3 = new AWS.S3({
       region: process.env.AWS_REGION,
       accessKeyId: process.env.AWS_ACCESS_KEY_ID,
-      secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY
+      secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
     });
     this.bucketName = process.env.S3_ATTACHMENTS_BUCKET!;
   }
@@ -182,9 +197,9 @@ class S3FileService {
       Bucket: this.bucketName,
       Key: filename,
       Body: file,
-      ContentType: 'application/octet-stream'
+      ContentType: "application/octet-stream",
     };
-    
+
     const result = await this.s3.upload(params).promise();
     return result.Location;
   }
@@ -192,9 +207,9 @@ class S3FileService {
   async downloadFile(filename: string): Promise<Buffer> {
     const params = {
       Bucket: this.bucketName,
-      Key: filename
+      Key: filename,
     };
-    
+
     const result = await this.s3.getObject(params).promise();
     return result.Body as Buffer;
   }
@@ -202,18 +217,18 @@ class S3FileService {
   async deleteFile(filename: string): Promise<void> {
     const params = {
       Bucket: this.bucketName,
-      Key: filename
+      Key: filename,
     };
-    
+
     await this.s3.deleteObject(params).promise();
   }
 
   // Generate pre-signed URLs for secure direct downloads
   getSignedDownloadUrl(filename: string): string {
-    return this.s3.getSignedUrl('getObject', {
+    return this.s3.getSignedUrl("getObject", {
       Bucket: this.bucketName,
       Key: filename,
-      Expires: 3600 // 1 hour
+      Expires: 3600, // 1 hour
     });
   }
 }
@@ -222,6 +237,7 @@ class S3FileService {
 #### Environment Configuration Changes
 
 **Local Environment (.env):**
+
 ```bash
 # Database
 DATABASE_PATH=./database.sqlite
@@ -238,6 +254,7 @@ FRONTEND_URL=http://localhost:3000
 ```
 
 **Production Environment (EC2):**
+
 ```bash
 # Database
 DATABASE_PATH=/home/ec2-user/app/database.sqlite
@@ -259,6 +276,7 @@ FRONTEND_URL=https://your-cloudfront-domain.cloudfront.net
 ### Step 3: Deployment Process
 
 #### Frontend Deployment to S3
+
 ```bash
 # Build the React application
 cd frontend
@@ -274,6 +292,7 @@ aws cloudfront create-invalidation \
 ```
 
 #### Backend Deployment to EC2
+
 ```bash
 # Connect to EC2 instance
 ssh -i your-key.pem ec2-user@your-ec2-ip
@@ -301,6 +320,7 @@ pm2 save
 ## Security Considerations
 
 ### S3 Bucket Policies
+
 ```json
 {
   "Version": "2012-10-17",
@@ -317,17 +337,14 @@ pm2 save
 ```
 
 ### IAM Roles and Policies
+
 ```json
 {
   "Version": "2012-10-17",
   "Statement": [
     {
       "Effect": "Allow",
-      "Action": [
-        "s3:GetObject",
-        "s3:PutObject",
-        "s3:DeleteObject"
-      ],
+      "Action": ["s3:GetObject", "s3:PutObject", "s3:DeleteObject"],
       "Resource": "arn:aws:s3:::your-app-attachments-bucket/*"
     }
   ]
@@ -335,6 +352,7 @@ pm2 save
 ```
 
 ### EC2 Security Groups
+
 - **Inbound Rules**:
   - HTTP (80) from 0.0.0.0/0
   - HTTPS (443) from 0.0.0.0/0
@@ -345,12 +363,14 @@ pm2 save
 ## Cost Optimization
 
 ### Free Tier Usage
+
 - **EC2**: t3.micro instance (750 hours/month free)
 - **S3**: 5GB storage, 20,000 GET requests, 2,000 PUT requests
 - **CloudFront**: 50GB data transfer, 2,000,000 requests
 - **Data Transfer**: 15GB outbound per month
 
 ### Estimated Monthly Costs (After Free Tier)
+
 - **EC2 t3.micro**: ~$8.50/month
 - **S3 Storage**: ~$0.10/GB/month
 - **CloudFront**: ~$0.085/GB for data transfer
@@ -359,12 +379,13 @@ pm2 save
 ## Monitoring and Maintenance
 
 ### CloudWatch Integration
+
 ```typescript
 // Add CloudWatch logging to Express app
-import AWS from 'aws-sdk';
+import AWS from "aws-sdk";
 
 const cloudWatchLogs = new AWS.CloudWatchLogs({
-  region: process.env.AWS_REGION
+  region: process.env.AWS_REGION,
 });
 
 // Log application events
@@ -375,14 +396,15 @@ app.use((req, res, next) => {
 ```
 
 ### Health Checks
+
 ```typescript
 // Add health check endpoint
-app.get('/health', (req, res) => {
+app.get("/health", (req, res) => {
   res.json({
-    status: 'healthy',
+    status: "healthy",
     timestamp: new Date().toISOString(),
     uptime: process.uptime(),
-    memory: process.memoryUsage()
+    memory: process.memoryUsage(),
   });
 });
 ```
@@ -390,6 +412,7 @@ app.get('/health', (req, res) => {
 ## Rollback Strategy
 
 ### Database Backup
+
 ```bash
 # Before migration, backup SQLite database
 cp database.sqlite database.backup.sqlite
@@ -399,6 +422,7 @@ aws s3 cp database.sqlite s3://your-backup-bucket/database-backup-$(date +%Y%m%d
 ```
 
 ### Application Rollback
+
 ```bash
 # Keep previous version available
 pm2 start previous-version/dist/app.js --name "support-ticket-api-rollback"
@@ -411,12 +435,14 @@ pm2 start support-ticket-api-rollback
 ## Testing Strategy
 
 ### Pre-Migration Testing
+
 1. **Local Environment**: Ensure all features work locally
 2. **Environment Variables**: Test with production-like config
 3. **File Upload**: Test with S3 in development
 4. **API Endpoints**: Verify all endpoints respond correctly
 
 ### Post-Migration Validation
+
 1. **Frontend Loading**: Verify React app loads from S3/CloudFront
 2. **API Connectivity**: Test all API endpoints from frontend
 3. **File Operations**: Upload, download, delete attachments
@@ -425,35 +451,42 @@ pm2 start support-ticket-api-rollback
 
 ## Migration Timeline
 
-### Week 1: Infrastructure Setup
-- Day 1-2: AWS account setup, IAM configuration
-- Day 3-4: S3 buckets, EC2 instance creation
-- Day 5-7: Security groups, networking configuration
+### Day 1: Infrastructure Setup (2-4 hours)
 
-### Week 2: Code Modifications
-- Day 1-3: Implement S3 file service
-- Day 4-5: Update environment configurations
-- Day 6-7: Testing with AWS services locally
+- **Morning**: AWS account setup, IAM user creation, AWS CLI configuration
+- **Afternoon**: Create S3 buckets, launch EC2 instance, configure security groups
 
-### Week 3: Deployment and Testing
-- Day 1-2: Deploy frontend to S3
-- Day 3-4: Deploy backend to EC2
-- Day 5-7: End-to-end testing, performance optimization
+### Day 2: Code Modifications (3-5 hours)
 
-### Week 4: Production Readiness
-- Day 1-2: Monitoring setup, logging
-- Day 3-4: Backup strategies, security review
-- Day 5-7: Documentation, handover
+- **Morning**: Implement S3 file service, update environment configurations
+- **Afternoon**: Test S3 integration locally, update CORS settings
+
+### Day 3: Deployment and Testing (4-6 hours)
+
+- **Morning**: Build and deploy frontend to S3, set up CloudFront (optional)
+- **Afternoon**: Deploy backend to EC2, configure PM2, end-to-end testing
+
+### Total Migration Time: 2-3 days (9-15 hours of work)
+
+### Optional Enhancements (Additional 1-2 days)
+
+- Database migration to RDS
+- Email notifications with SES
+- Advanced monitoring with CloudWatch
+- SSL certificate setup
+- Custom domain configuration
 
 ## Success Metrics
 
 ### Performance Targets
+
 - **Frontend Load Time**: < 3 seconds globally
 - **API Response Time**: < 500ms for most endpoints
 - **File Upload**: < 30 seconds for 10MB files
 - **Uptime**: > 99.9% availability
 
 ### Cost Targets
+
 - **Monthly AWS Bill**: < $20 for small usage
 - **Data Transfer**: Optimize to stay within free tier
 - **Storage**: Implement lifecycle policies for old files
@@ -461,6 +494,7 @@ pm2 start support-ticket-api-rollback
 ## Benefits of Phase 2 Migration
 
 ### Technical Benefits
+
 - **Scalability**: Auto-scaling capabilities
 - **Reliability**: 99.99% uptime SLA
 - **Performance**: Global CDN distribution
@@ -468,6 +502,7 @@ pm2 start support-ticket-api-rollback
 - **Backup**: Automated backup solutions
 
 ### Business Benefits
+
 - **Professional Deployment**: Production-ready application
 - **Global Accessibility**: Worldwide user access
 - **Cost Efficiency**: Pay-as-you-use pricing

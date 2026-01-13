@@ -108,3 +108,6 @@ temp/
 .Trashes
 ehthumbs.db
 Thumbs.db
+
+#migration checklist
+AWSMigration.md
