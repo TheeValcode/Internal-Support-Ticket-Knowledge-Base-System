@@ -24,7 +24,7 @@ export class ArticleService {
 
   static getArticleById(id: number): KnowledgeArticle | null {
     const article = db.prepare('SELECT * FROM knowledge_articles WHERE id = ?').get(id) as KnowledgeArticle;
-    return article || null;
+    return article ? this.parseArticleTags(article) : null;
   }
 
   static getAllArticles(includeUnpublished = false): KnowledgeArticle[] {

@@ -6,7 +6,7 @@ import dotenv from 'dotenv';
 import path from 'path';
 
 // Import database initialization
-import { initializeDatabase } from './database/connection';
+import { initializeDatabase, db } from './database/connection';
 import { seedDatabase } from './database/seeds';
 
 // Import routes
@@ -29,8 +29,10 @@ const PORT = process.env.PORT || 5000;
 // Initialize database
 initializeDatabase();
 
-// Seed database in development
-if (process.env.NODE_ENV === 'development') {
+// Seed database if no users exist
+const userCount = db.prepare('SELECT COUNT(*) as count FROM users').get() as any;
+if (userCount.count === 0) {
+  console.log('No users found, seeding database...');
   seedDatabase();
 }
 

@@ -111,11 +111,11 @@ export const ArticleDetailPage: React.FC = () => {
               {article.view_count} views
             </div>
           </div>
-          
+
           <h1 className="text-3xl font-bold text-gray-900 mb-4">
             {article.title}
           </h1>
-          
+
           <div className="flex items-center text-sm text-gray-600">
             <span>Last updated {formatDate(article.updated_at)}</span>
             <span className="mx-2">•</span>
@@ -125,10 +125,10 @@ export const ArticleDetailPage: React.FC = () => {
 
         {/* Article Content */}
         <div className="prose max-w-none">
-          <div 
+          <div
             className="text-gray-700 leading-relaxed"
-            dangerouslySetInnerHTML={{ 
-              __html: `<p class="mb-4">${formatContent(article.content)}</p>` 
+            dangerouslySetInnerHTML={{
+              __html: `<p class="mb-4">${formatContent(article.content)}</p>`
             }}
           />
         </div>
