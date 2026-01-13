@@ -10,6 +10,7 @@
     "test": "jest",
     "test:watch": "jest --watch",
     "reset-db": "node reset-database.js",
+    "check-db": "node check-database.js",
     "seed": "node -e \"require('./dist/database/seeds.js').seedDatabase()\""
   },
   "keywords": [],

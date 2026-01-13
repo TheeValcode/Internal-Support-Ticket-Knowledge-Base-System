@@ -189,6 +189,54 @@ The system comes with pre-seeded demo accounts:
   - Password: user123
   - Access: Create and manage own tickets
 
+## 🗄 Database Management
+
+The application automatically creates and seeds the database on first run. If you need to reset or check the database:
+
+### Database Commands
+
+```bash
+cd server
+
+# Check database status and content
+npm run check-db
+
+# Reset database (removes existing data and recreates)
+npm run reset-db
+
+# Manual seeding (after building)
+npm run build
+npm run seed
+```
+
+### Troubleshooting Database Issues
+
+If the knowledge base appears empty or you're having login issues:
+
+1. **Check database status**:
+
+   ```bash
+   cd server
+   npm run check-db
+   ```
+
+2. **Reset database if needed**:
+
+   ```bash
+   npm run reset-db
+   ```
+
+3. **Restart the server**:
+   ```bash
+   npm run dev
+   ```
+
+The database will be automatically recreated with:
+
+- 2 demo user accounts
+- 6 comprehensive knowledge base articles
+- Proper table structure and relationships
+
 ## 📚 API Documentation
 
 ### Authentication Endpoints
@@ -354,4 +402,5 @@ If you encounter any issues or have questions:
 ---
 
 **Built with ❤️ for learning and demonstration purposes**
+
 # Internal-Support-Ticket-Knowledge-Base-System
