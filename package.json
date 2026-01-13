@@ -1,0 +1,20 @@
+{
+  "name": "support-ticket-system",
+  "version": "1.0.0",
+  "description": "Internal Support Ticket & Knowledge Base System",
+  "scripts": {
+    "dev": "concurrently \"npm run server:dev\" \"npm run client:dev\"",
+    "server:dev": "cd server && npm run dev",
+    "client:dev": "cd frontend && npm run dev",
+    "build": "npm run server:build && npm run client:build",
+    "server:build": "cd server && npm run build",
+    "client:build": "cd frontend && npm run build",
+    "start": "cd server && npm start"
+  },
+  "devDependencies": {
+    "concurrently": "^8.2.2"
+  },
+  "keywords": ["support", "tickets", "helpdesk", "knowledge-base"],
+  "author": "Developer",
+  "license": "MIT"
+}
