@@ -37,7 +37,10 @@ if (userCount.count === 0) {
 }
 
 // Security middleware
-app.use(helmet());
+app.use(helmet({
+  contentSecurityPolicy: false,
+  hsts: false,
+}));
 
 // CORS configuration
 app.use(cors({
@@ -73,6 +76,15 @@ app.use('/api/tickets', ticketRoutes);
 app.use('/api/articles', articleRoutes);
 app.use('/api/users', userRoutes);
 app.use('/api', uploadRoutes);
+
+// Serve static files from the React app
+app.use(express.static(path.join(__dirname, '../../frontend/dist')));
+
+// The "catchall" handler: for any request that doesn't
+// match one above, send back React's index.html file.
+app.get('*', (req, res) => {
+  res.sendFile(path.join(__dirname, '../../frontend/dist/index.html'));
+});
 
 // 404 handler
 app.use(notFound);
