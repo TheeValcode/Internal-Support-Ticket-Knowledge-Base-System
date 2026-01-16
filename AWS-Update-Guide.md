@@ -103,5 +103,16 @@ jobs:
 ```
 
 **To set this up, you would need to:**
-1.  Add your EC2 IP (`EC2_HOST`) and Private Key (`EC2_KEY`) to GitHub Repository Secrets.
-2.  Add the `deploy.yml` file to your project.
+1.  **Configure GitHub Secrets:**
+    *   Go to Repo Settings -> Secrets and variables -> Actions.
+    *   Add `EC2_HOST` (Your Public IP).
+    *   Add `EC2_USERNAME` (`ec2-user`).
+    *   Add `EC2_SSH_KEY` (Paste content of `.pem` file).
+
+2.  **Update Security Group (Critical):**
+    *   GitHub Actions runners use dynamic IP addresses.
+    *   You MUST update your EC2 Security Group to allow SSH (Port 22) from **Anywhere (0.0.0.0/0)**.
+    *   *Note: Since you are using a key pair, this is still secure, but ensure your private key is kept safe.*
+
+3.  **Add the Workflow File:**
+    *   Ensure `.github/workflows/deploy.yml` exists in your project.

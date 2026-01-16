@@ -113,3 +113,8 @@ Thumbs.db
 # AWSMigration.md
 
 .aws/
+
+# Documentation
+*.md
+!README.md
+!solution.md
