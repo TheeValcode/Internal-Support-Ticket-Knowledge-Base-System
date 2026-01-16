@@ -1,0 +1,40 @@
+name: Deploy to AWS
+
+on:
+  push:
+    branches: [ main ]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Deploy to EC2
+      uses: appleboy/ssh-action@master
+      with:
+        host: ${{ secrets.EC2_HOST }}
+        username: ${{ secrets.EC2_USERNAME }}
+        key: ${{ secrets.EC2_SSH_KEY }}
+        script: |
+          # Navigate to app directory
+          cd /home/ec2-user/app
+          
+          # Pull latest changes
+          git pull origin main
+          
+          # Frontend: Install & Build
+          echo "🏗️ Building Frontend..."
+          cd frontend
+          npm install
+          npm run build
+          
+          # Backend: Install & Build
+          echo "🏗️ Building Backend..."
+          cd ../server
+          npm install
+          npm run build
+          
+          # Restart Application
+          echo "🔄 Restarting PM2..."
+          pm2 restart support-ticket
+          
+          echo "✅ Deployment Complete!"
