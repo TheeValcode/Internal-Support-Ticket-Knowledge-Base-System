@@ -110,11 +110,14 @@ ehthumbs.db
 Thumbs.db
 
 #migration checklist
-# AWSMigration.md
+AWSMigration.md
+Code-Deployment-Guide.md
+Frontend-Deployment-Guide.md
+AWS-Deployment-Retrospective.md
+AWS-Simple-Deployment.md
+AWS-Terminal-Deployment.md
+AWS-Update-Guide.md
+IMPLEMENTATION_SUMMARY.md
 
 .aws/
 
-# Documentation
-*.md
-!README.md
-!solution.md

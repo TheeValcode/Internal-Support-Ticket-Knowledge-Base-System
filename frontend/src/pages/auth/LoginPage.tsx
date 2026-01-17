@@ -2,13 +2,15 @@ import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import { LoginCredentials } from '../../types/auth';
+import { FiEye, FiEyeOff } from 'react-icons/fi';
 
 export const LoginPage: React.FC = () => {
   const navigate = useNavigate();
   const { login } = useAuth();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  
+  const [showPassword, setShowPassword] = useState(false);
+
   const [formData, setFormData] = useState<LoginCredentials>({
     email: '',
     password: '',
@@ -35,13 +37,6 @@ export const LoginPage: React.FC = () => {
     } finally {
       setLoading(false);
     }
-  };
-
-  const fillDemoCredentials = (type: 'admin' | 'user') => {
-    setFormData({
-      email: type === 'admin' ? 'admin@example.com' : 'user@example.com',
-      password: type === 'admin' ? 'admin123' : 'user123'
-    });
   };
 
   return (
@@ -99,17 +94,30 @@ export const LoginPage: React.FC = () => {
               <label htmlFor="password" className="form-label">
                 Password
               </label>
-              <input
-                id="password"
-                name="password"
-                type="password"
-                autoComplete="current-password"
-                required
-                value={formData.password}
-                onChange={handleInputChange}
-                className="form-input"
-                placeholder="Enter your password"
-              />
+              <div className="relative">
+                <input
+                  id="password"
+                  name="password"
+                  type={showPassword ? "text" : "password"}
+                  autoComplete="current-password"
+                  required
+                  value={formData.password}
+                  onChange={handleInputChange}
+                  className="form-input pr-10"
+                  placeholder="Enter your password"
+                />
+                <button
+                  type="button"
+                  className="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 hover:text-gray-600"
+                  onClick={() => setShowPassword(!showPassword)}
+                >
+                  {showPassword ? (
+                    <FiEyeOff className="h-5 w-5" aria-hidden="true" />
+                  ) : (
+                    <FiEye className="h-5 w-5" aria-hidden="true" />
+                  )}
+                </button>
+              </div>
             </div>
           </div>
 
@@ -142,39 +150,6 @@ export const LoginPage: React.FC = () => {
             </p>
           </div>
         </form>
-
-        {/* Demo Credentials */}
-        <div className="mt-8 border-t border-gray-200 pt-6">
-          <h3 className="text-sm font-medium text-gray-900 mb-3">Demo Accounts</h3>
-          <div className="grid grid-cols-1 gap-3">
-            <button
-              type="button"
-              onClick={() => fillDemoCredentials('admin')}
-              className="flex items-center justify-between p-3 bg-blue-50 rounded-lg hover:bg-blue-100 transition-colors"
-            >
-              <div className="text-left">
-                <p className="text-sm font-medium text-blue-900">Admin Account</p>
-                <p className="text-xs text-blue-700">admin@example.com</p>
-              </div>
-              <span className="badge badge-blue">Admin</span>
-            </button>
-            
-            <button
-              type="button"
-              onClick={() => fillDemoCredentials('user')}
-              className="flex items-center justify-between p-3 bg-green-50 rounded-lg hover:bg-green-100 transition-colors"
-            >
-              <div className="text-left">
-                <p className="text-sm font-medium text-green-900">User Account</p>
-                <p className="text-xs text-green-700">user@example.com</p>
-              </div>
-              <span className="badge badge-green">User</span>
-            </button>
-          </div>
-          <p className="text-xs text-gray-500 mt-3 text-center">
-            Click on a demo account to auto-fill the login form
-          </p>
-        </div>
       </div>
     </div>
   );
