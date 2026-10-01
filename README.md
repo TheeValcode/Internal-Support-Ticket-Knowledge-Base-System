@@ -78,7 +78,7 @@ A centralized platform for managing support requests, tracking issues, and organ
 
 ### Frontend
 
-- **React 18** with **TypeScript**
+- **React 19** with **TypeScript**
 - **Vite** for fast development and building
 - **React Router** for client-side routing
 - **Axios** for API communication
@@ -133,7 +133,7 @@ A centralized platform for managing support requests, tracking issues, and organ
 
    ```bash
    git clone https://github.com/TheeValcode/Internal-Support-Ticket-Knowledge-Base-System.git
-   cd support-ticket-system
+   cd Internal-Support-Ticket-Knowledge-Base-System
    ```
 
 2. **Install dependencies**
