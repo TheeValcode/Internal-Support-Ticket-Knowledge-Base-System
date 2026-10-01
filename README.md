@@ -420,5 +420,3 @@ If you encounter any issues or have questions:
 ---
 
 **Built with ❤️ for learning and demonstration purposes**
-
-# Internal-Support-Ticket-Knowledge-Base-System
