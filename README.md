@@ -1,6 +1,24 @@
-# Support Ticket & Knowledge Base System
 
-A full-stack internal support ticket system with knowledge base functionality, built with Node.js/Express backend and React frontend.
+<div align="center">
+
+# 🎫 Support Ticket & Knowledge Base System
+
+### A Full-Stack Helpdesk and Knowledge Management Application
+
+A centralized platform for managing support requests, tracking issues, and organizing technical documentation.
+
+<br/>
+
+<img src="https://skillicons.dev/icons?i=react,ts,nodejs,express,sqlite,tailwind,vite&theme=dark" alt="Technology stack" />
+
+<br/><br/>
+
+![TypeScript](https://img.shields.io/badge/TypeScript-064e3b?style=flat-square&logo=typescript&logoColor=white)
+![React](https://img.shields.io/badge/React-047857?style=flat-square&logo=react&logoColor=white)
+![Node.js](https://img.shields.io/badge/Node.js-065f46?style=flat-square&logo=nodedotjs&logoColor=white)
+![SQLite](https://img.shields.io/badge/SQLite-047857?style=flat-square&logo=sqlite&logoColor=white)
+
+</div>
 
 ## 🚀 Features
 
