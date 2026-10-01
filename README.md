@@ -3,9 +3,9 @@
 
 # 🎫 Support Ticket & Knowledge Base System
 
-### A Full-Stack Helpdesk and Knowledge Management Application
+### Full-Stack Helpdesk & Knowledge Management Application
 
-A centralized platform for managing support requests, tracking issues, and organizing technical documentation.
+A centralized platform for managing technical support requests, tracking issues, and organizing searchable documentation.
 
 <br/>
 
@@ -20,152 +20,143 @@ A centralized platform for managing support requests, tracking issues, and organ
 
 </div>
 
-## 🚀 Features
+---
 
-### Authentication & Authorization
+## 📖 Overview
 
-- User registration and login with JWT authentication
-- Role-based access control (User/Admin)
-- Secure password hashing with bcrypt
-- Demo accounts for testing
+The Support Ticket & Knowledge Base System is a full-stack application designed to bring internal support requests and technical documentation into one place.
 
-### Support Ticket System
+Users can submit and monitor tickets, communicate through ticket messages, attach files, and search knowledge-base articles. Administrators have additional capabilities for managing tickets, users, and documentation.
 
-- Create, view, and manage support tickets
-- Ticket categories: Hardware, Software, Network, Access, Other
-- Priority levels: Low, Medium, High, Critical
-- Status tracking: Open, In Progress, Resolved, Closed
-- File attachments with drag & drop upload
-- Admin notes and comments
-- Ticket filtering and search
+The application combines a React and TypeScript frontend with a Node.js and Express REST API backed by SQLite.
 
-### Knowledge Base
+## ✨ Key Features
 
-- Searchable article database
-- Category-based organization
-- Article view tracking
-- Markdown-like content formatting
-- Admin-managed content
-- Tag-based navigation
+### 🔐 Authentication & Authorization
 
-### File Management
+- User registration and login
+- JWT-based authentication
+- Password hashing with bcrypt
+- Role-based access control for users and administrators
+- Protected API routes
 
-- Secure file upload for ticket attachments
-- File type validation and size limits (5MB max)
-- Download functionality with access control
-- Support for images, PDFs, documents, text files, and logs
+### 🎫 Support Ticket Management
 
-### Admin Features
+- Create and view support tickets
+- Categorize requests by hardware, software, network, access, or other issues
+- Set ticket priorities from low to critical
+- Track ticket status: open, in progress, resolved, or closed
+- Search and filter tickets
+- Exchange messages within ticket conversations
+- Administrative ticket updates and deletion
 
-- Admin dashboard with statistics
-- Ticket management and status updates
-- Knowledge base article management
-- User role management
+### 📚 Knowledge Base
 
-## 🛠 Technology Stack
+- Browse published knowledge-base articles
+- Search documentation
+- Organize articles by category and tags
+- Track article views
+- Create, update, and delete articles through administrator-only endpoints
 
-### Backend
+### 📎 File Attachments
 
-- **Node.js** with **Express.js**
-- **TypeScript** for type safety
-- **SQLite** database with better-sqlite3
-- **JWT** for authentication
-- **bcrypt** for password hashing
-- **multer** for file uploads
-- **helmet** for security headers
-- **cors** for cross-origin requests
-- **express-rate-limit** for API rate limiting
+- Upload files to support tickets
+- Retrieve attachment lists
+- Download attachments
+- Validate uploads through backend middleware
+- Administrator-controlled attachment deletion
 
-### Frontend
+### 🛡️ Administration
 
-- **React 19** with **TypeScript**
-- **Vite** for fast development and building
-- **React Router** for client-side routing
-- **Axios** for API communication
-- **Tailwind CSS** for styling
-- **Context API** for state management
+- Manage user accounts
+- View user statistics
+- Activate or deactivate accounts
+- Reset user passwords
+- Manage ticket status and documentation
 
+## 🛠️ Technology Stack
 
-## 🏗️ Architecture Overview
+| Layer | Technologies |
+|---|---|
+| Frontend | React 19, TypeScript, Vite |
+| Styling | Tailwind CSS |
+| Routing | React Router |
+| HTTP Client | Axios |
+| Backend | Node.js, Express 5, TypeScript |
+| Database | SQLite, better-sqlite3 |
+| Authentication | JWT, bcrypt |
+| Security | Helmet, CORS, express-rate-limit |
+| File Uploads | Multer |
+| Development | npm, Nodemon, Concurrently |
 
-The application follows a client-server architecture, with a React frontend communicating with an Express REST API.
+## 🏗️ Architecture
+
+The application follows a client-server architecture.
 
 ```text
-                  USER
-                    |
-                    v
-        +-----------------------+
-        | React + TypeScript    |
-        | Frontend (Port 3000)  |
-        +-----------------------+
-                    |
-                    | HTTP / REST API
-                    | JWT Bearer Token
-                    v
-        +-----------------------+
-        | Node.js + Express     |
-        | Backend (Port 5000)   |
-        +-----------------------+
-                    |
-          +---------+---------+
-          |                   |
-          v                   v
-  +----------------+  +----------------+
-  | SQLite         |  | Local Uploads  |
-  | Database       |  | File Storage   |
-  +----------------+  +----------------+
+                 USER
+                   |
+                   v
+        +----------------------+
+        | React + TypeScript   |
+        | Frontend :3000       |
+        +----------------------+
+                   |
+                   | HTTP / REST
+                   | JWT Bearer Token
+                   v
+        +----------------------+
+        | Node.js + Express    |
+        | Backend :5000        |
+        +----------------------+
+                   |
+          +--------+--------+
+          |                 |
+          v                 v
+   +-------------+   +-------------+
+   | SQLite      |   | Local File  |
+   | Database    |   | Storage     |
+   +-------------+   +-------------+
 ```
 
-### How It Works
+### Request Flow
 
-1. **Frontend:** React and TypeScript provide the interface for authentication, ticket management, and knowledge-base access.
-2. **API:** Express handles incoming requests, routes them to the relevant handlers, and applies middleware.
-3. **Authentication:** JWT bearer tokens are attached to authenticated API requests.
-4. **Database:** SQLite stores user accounts, support tickets, ticket notes, knowledge-base articles, and attachment records.
-5. **File storage:** Uploaded attachments are stored locally, with their associated records managed by the backend.
+1. The React frontend sends requests through an Axios client.
+2. The API receives requests and applies the relevant middleware.
+3. Protected routes verify JWT authentication and, where required, administrator permissions.
+4. Backend handlers process requests and interact with SQLite.
+5. Responses return to the frontend for presentation to the user.
 
-### Development Environment
-
-- Frontend: `http://localhost:3000`
-- Backend: `http://localhost:5000`
-- API prefix: `/api`
-- Health check: `http://localhost:5000/health`
-
-The frontend uses Axios for API communication. Vite also provides a development proxy for requests under `/api`.
-
+The frontend stores the authentication token in local storage and attaches it to API requests through an Axios interceptor.
 
 ## 📁 Project Structure
 
-```
-├── server/                 # Backend API
+```text
+.
+├── frontend/
 │   ├── src/
-│   │   ├── controllers/    # Request handlers
-│   │   ├── routes/         # API routes
-│   │   ├── services/       # Business logic
-│   │   ├── middleware/     # Custom middleware
-│   │   ├── database/       # Database setup and seeds
-│   │   ├── utils/          # Utility functions
-│   │   └── types/          # TypeScript types
-│   ├── uploads/            # File storage
+│   │   ├── components/
+│   │   ├── pages/
+│   │   ├── services/
+│   │   ├── context/
+│   │   └── types/
+│   ├── package.json
+│   └── vite.config.ts
+│
+├── server/
+│   ├── src/
+│   │   ├── controllers/
+│   │   ├── database/
+│   │   ├── middleware/
+│   │   ├── routes/
+│   │   ├── services/
+│   │   ├── types/
+│   │   ├── utils/
+│   │   └── app.ts
+│   ├── .env.example
 │   └── package.json
 │
-├── frontend/               # React frontend
-│   ├── src/
-│   │   ├── components/     # Reusable components
-│   │   │   ├── common/     # Common UI components
-│   │   │   ├── forms/      # Form components
-│   │   │   └── layout/     # Layout components
-│   │   ├── pages/          # Page components
-│   │   │   ├── auth/       # Authentication pages
-│   │   │   ├── tickets/    # Ticket management pages
-│   │   │   ├── knowledge/  # Knowledge base pages
-│   │   │   └── admin/      # Admin pages
-│   │   ├── services/       # API services
-│   │   ├── context/        # React context
-│   │   ├── utils/          # Utility functions
-│   │   └── types/          # TypeScript types
-│   └── package.json
-│
+├── package.json
 └── README.md
 ```
 
@@ -173,179 +164,61 @@ The frontend uses Axios for API communication. Vite also provides a development 
 
 ### Prerequisites
 
-- Node.js (v18 or higher)
-- npm or yarn
+Install a compatible Node.js version and npm. A current Node.js LTS release is recommended.
 
-### Installation
-
-1. **Clone the repository**
-
-   ```bash
-   git clone https://github.com/TheeValcode/Internal-Support-Ticket-Knowledge-Base-System.git
-   cd Internal-Support-Ticket-Knowledge-Base-System
-   ```
-
-2. **Install dependencies**
-
-   ```bash
-   # Install root dependencies (for concurrent running)
-   npm install
-
-   # Install backend dependencies
-   cd server
-   npm install
-
-   # Install frontend dependencies
-   cd ../frontend
-   npm install
-   ```
-
-3. **Set up environment variables**
-
-   ```bash
-   # Backend environment
-   cd server
-   cp .env.example .env
-   # Edit .env with your configuration
-
-   # Frontend environment
-   cd ../frontend
-   # Create .env file with:
-   echo "VITE_API_URL=http://localhost:5000/api" > .env
-   ```
-
-### Running the Application
-
-#### Option 1: Run both servers concurrently (recommended)
+### 1. Clone the Repository
 
 ```bash
-# From the root directory
-npm run dev
+git clone https://github.com/TheeValcode/Internal-Support-Ticket-Knowledge-Base-System.git
+
+cd Internal-Support-Ticket-Knowledge-Base-System
 ```
 
-#### Option 2: Run servers separately
+### 2. Install Dependencies
 
-1. **Start the backend server**
+Install the root dependencies:
 
-   ```bash
-   cd server
-   npm run dev
-   ```
+```bash
+npm install
+```
 
-   The server will start on http://localhost:5000
-
-2. **Start the frontend development server**
-   ```bash
-   cd frontend
-   npm run dev
-   ```
-   The frontend will start on http://localhost:3000
-
-### Default Demo Accounts
-
-The system comes with pre-seeded demo accounts:
-
-- **Admin User**
-
-  - Email: admin@example.com
-  - Password: admin123
-  - Access: Full system administration
-
-- **Regular User**
-  - Email: user@example.com
-  - Password: user123
-  - Access: Create and manage own tickets
-
-## 🗄 Database Management
-
-The application automatically creates and seeds the database on first run. If you need to reset or check the database:
-
-### Database Commands
+Install the backend dependencies:
 
 ```bash
 cd server
-
-# Check database status and content
-npm run check-db
-
-# Reset database (removes existing data and recreates)
-npm run reset-db
-
-# Manual seeding (after building)
-npm run build
-npm run seed
+npm install
 ```
 
-### Troubleshooting Database Issues
+Install the frontend dependencies:
 
-If the knowledge base appears empty or you're having login issues:
+```bash
+cd ../frontend
+npm install
+```
 
-1. **Check database status**:
+Return to the repository root:
 
-   ```bash
-   cd server
-   npm run check-db
-   ```
+```bash
+cd ..
+```
 
-2. **Reset database if needed**:
+### 3. Configure Environment Variables
 
-   ```bash
-   npm run reset-db
-   ```
+Create the backend environment file:
 
-3. **Restart the server**:
-   ```bash
-   npm run dev
-   ```
+```bash
+cp server/.env.example server/.env
+```
 
-The database will be automatically recreated with:
+Update `JWT_SECRET` in `server/.env` with a securely generated secret.
 
-- 2 demo user accounts
-- 6 comprehensive knowledge base articles
-- Proper table structure and relationships
-
-## 📚 API Documentation
-
-### Authentication Endpoints
-
-- `POST /api/auth/register` - User registration
-- `POST /api/auth/login` - User login
-- `GET /api/auth/me` - Get current user profile
-- `POST /api/auth/logout` - User logout
-
-### Ticket Management
-
-- `GET /api/tickets` - List tickets (filtered by user role)
-- `POST /api/tickets` - Create new ticket
-- `GET /api/tickets/:id` - Get ticket details
-- `PUT /api/tickets/:id` - Update ticket (admin only)
-- `POST /api/tickets/:id/notes` - Add note to ticket (admin only)
-- `GET /api/tickets/:id/notes` - Get ticket notes
-
-### Knowledge Base
-
-- `GET /api/articles` - List published articles
-- `GET /api/articles/search` - Search articles
-- `GET /api/articles/:id` - Get article details
-- `POST /api/articles` - Create article (admin only)
-- `PUT /api/articles/:id` - Update article (admin only)
-- `DELETE /api/articles/:id` - Delete article (admin only)
-
-### File Uploads
-
-- `POST /api/tickets/:id/attachments` - Upload file to ticket
-- `GET /api/tickets/:id/attachments` - List ticket attachments
-- `GET /api/attachments/:id/download` - Download attachment
-
-## 🔧 Environment Configuration
-
-### Backend (.env)
+The backend environment template includes:
 
 ```env
 PORT=5000
 NODE_ENV=development
 DATABASE_PATH=./database.sqlite
-JWT_SECRET=your-super-secret-jwt-key
+JWT_SECRET=replace-with-a-secure-secret
 JWT_EXPIRES_IN=24h
 UPLOAD_DIR=./uploads
 MAX_FILE_SIZE=5242880
@@ -354,118 +227,240 @@ RATE_LIMIT_MAX_REQUESTS=100
 FRONTEND_URL=http://localhost:3000
 ```
 
-### Frontend (.env)
+Create `frontend/.env` containing:
 
 ```env
 VITE_API_URL=http://localhost:5000/api
 ```
 
-## 🗄 Database Schema
+Do not commit real secrets or local `.env` files.
 
-The application uses SQLite with the following main tables:
+### 4. Start the Application
 
-- `users` - User accounts and authentication
-- `tickets` - Support tickets
-- `ticket_notes` - Comments and notes on tickets
-- `knowledge_articles` - Knowledge base articles
-- `attachments` - File attachments for tickets
+From the repository root:
 
-## 🔒 Security Features
+```bash
+npm run dev
+```
 
-- JWT-based stateless authentication
-- Password hashing with bcrypt (12 rounds)
-- Input validation and sanitization
-- File type and size validation
-- Rate limiting on API endpoints
-- CORS configuration
-- Security headers with Helmet
-- Role-based access control
+The root development script uses Concurrently to start the frontend and backend.
 
-## 🏗 Building for Production
+Default development addresses:
 
-### Backend
+- Frontend: http://localhost:3000
+- Backend: http://localhost:5000
+- Health endpoint: http://localhost:5000/health
+
+Alternatively, start each application separately.
+
+Backend:
+
+```bash
+cd server
+npm run dev
+```
+
+Frontend, in another terminal:
+
+```bash
+cd frontend
+npm run dev
+```
+
+**Note:** These commands reflect the repository configuration. Runtime compatibility should be verified against the installed dependency versions.
+
+## 👤 Development Demo Accounts
+
+The database seed script defines the following demonstration accounts:
+
+| Role | Email | Password |
+|---|---|---|
+| Administrator | admin@example.com | admin123 |
+| User | user@example.com | user123 |
+
+These credentials are for local demonstration only.
+
+**Never deploy these seeded credentials to a public production environment.**
+
+## 🗄️ Database
+
+The application uses SQLite through `better-sqlite3`.
+
+The primary database tables are:
+
+| Table | Purpose |
+|---|---|
+| `users` | User accounts, roles, and authentication |
+| `tickets` | Support requests and their status |
+| `ticket_messages` | Ticket conversations and internal messages |
+| `knowledge_articles` | Searchable technical documentation |
+| `attachments` | File attachment metadata |
+
+The backend initializes its database schema at startup and contains logic to seed demonstration data when no users exist.
+
+### Database Utilities
+
+Run these commands from the `server` directory:
+
+Check database information:
+
+```bash
+npm run check-db
+```
+
+Reset the database:
+
+```bash
+npm run reset-db
+```
+
+**Warning:** Resetting the database can delete existing local data. Use it only in a development environment where data loss is acceptable.
+
+## 📡 API Reference
+
+The following routes are defined in the backend.
+
+### Authentication
+
+| Method | Endpoint | Purpose |
+|---|---|---|
+| POST | `/api/auth/register` | Register a user |
+| POST | `/api/auth/login` | Log in |
+| GET | `/api/auth/me` | Retrieve authenticated profile |
+| POST | `/api/auth/logout` | Log out |
+
+### Tickets
+
+Ticket endpoints require authentication.
+
+| Method | Endpoint | Purpose |
+|---|---|---|
+| POST | `/api/tickets` | Create ticket |
+| GET | `/api/tickets` | List tickets |
+| GET | `/api/tickets/search` | Search tickets |
+| GET | `/api/tickets/:id` | Retrieve ticket |
+| PUT | `/api/tickets/:id` | Update ticket (admin) |
+| DELETE | `/api/tickets/:id` | Delete ticket (admin) |
+| POST | `/api/tickets/:id/messages` | Add ticket message |
+| GET | `/api/tickets/:id/messages` | List ticket messages |
+
+### Knowledge Base
+
+| Method | Endpoint | Purpose |
+|---|---|---|
+| GET | `/api/articles` | List articles |
+| GET | `/api/articles/search` | Search articles |
+| GET | `/api/articles/categories` | List categories |
+| GET | `/api/articles/:id` | Retrieve article |
+| POST | `/api/articles` | Create article (admin) |
+| PUT | `/api/articles/:id` | Update article (admin) |
+| DELETE | `/api/articles/:id` | Delete article (admin) |
+
+### Attachments
+
+All attachment routes require authentication.
+
+| Method | Endpoint | Purpose |
+|---|---|---|
+| POST | `/api/tickets/:ticketId/attachments` | Upload attachment |
+| GET | `/api/tickets/:ticketId/attachments` | List attachments |
+| GET | `/api/attachments/:id/download` | Download attachment |
+| DELETE | `/api/attachments/:id` | Delete attachment (admin) |
+
+### User Administration
+
+The `/api/users` routes require administrator access and include user listing, searching, account creation, updates, deletion, activation, deactivation, and password resets.
+
+## 🔒 Security Considerations
+
+The backend includes:
+
+- JWT authentication middleware
+- Role-based authorization
+- bcrypt password hashing
+- Helmet security middleware
+- Configurable CORS
+- API rate limiting
+- Upload validation middleware
+
+These controls are implemented in the codebase but do not constitute an independent security audit.
+
+Before any production deployment, review token storage, secret management, HTTPS configuration, file access controls, and production security headers.
+
+## 📦 Build Commands
+
+Build the backend:
 
 ```bash
 cd server
 npm run build
-npm start
 ```
 
-### Frontend
+Build the frontend:
 
 ```bash
 cd frontend
 npm run build
-# Serve the dist/ folder with your preferred web server
 ```
 
-## 🚀 AWS Migration Ready
+The root package also defines:
 
-This application is designed to be easily migrated to AWS:
+```bash
+npm run build
+```
 
-### Current Architecture (Local)
+which invokes the backend and frontend build scripts.
 
-- React dev server (localhost:3000)
-- Express API server (localhost:5000)
-- SQLite database file
-- Local file system storage
+Production deployment requires appropriate hosting, environment configuration, persistent storage, and runtime verification.
 
-### Target Architecture (AWS)
+## 🧪 Testing Status
 
-- React build deployed to S3 + CloudFront
-- Express API on EC2 instance
-- SQLite database on EC2 (or migrate to RDS)
-- File attachments in S3 bucket
+The backend includes Jest and Supertest dependencies, but automated test coverage has not been verified as complete.
 
-### Migration Steps
+Recommended testing priorities include:
 
-1. **Frontend**: Build and deploy to S3, configure CloudFront
-2. **Backend**: Deploy to EC2, configure environment variables
-3. **Files**: Migrate from local storage to S3
-4. **Database**: Keep SQLite on EC2 or migrate to RDS
-5. **Security**: Configure security groups, SSL certificates
+- Authentication and authorization
+- Ticket creation and status changes
+- Role-based permissions
+- Attachment validation
+- Knowledge-base search
+- Database initialization and migrations
 
-## 🧪 Testing
+## 🗺️ Roadmap
 
-Currently, the project structure is set up for testing but test files are not implemented. You can add tests using:
+Potential future enhancements:
 
-- **Backend**: Jest with Supertest
-- **Frontend**: Jest with React Testing Library
-
-## 🔮 Future Enhancements
-
-- [ ] Email notifications for ticket updates
-- [ ] Real-time updates with WebSockets
-- [ ] Advanced search with filters
-- [ ] Ticket assignment and workflow management
-- [ ] Knowledge base article versioning
-- [ ] User dashboard with analytics
-- [ ] Mobile-responsive improvements
-- [ ] Comprehensive test coverage
+- [ ] Comprehensive automated tests
+- [ ] Email notifications
+- [ ] Real-time ticket updates
+- [ ] Advanced ticket assignment workflows
+- [ ] Knowledge-base version history
 - [ ] Docker containerization
-- [ ] CI/CD pipeline with GitHub Actions
+- [ ] CI/CD pipeline
+- [ ] Production deployment documentation
 
 ## 🤝 Contributing
 
-1. Fork the repository
-2. Create a feature branch (`git checkout -b feature/amazing-feature`)
-3. Commit your changes (`git commit -m 'Add some amazing feature'`)
-4. Push to the branch (`git push origin feature/amazing-feature`)
-5. Open a Pull Request
+Contributions and suggestions are welcome through GitHub issues and pull requests.
 
-## 📄 License
+For proposed changes, open an issue describing the problem or enhancement before submitting a substantial pull request.
 
-This project is for educational and demonstration purposes.
+## 📄 Project Usage
 
-## 🆘 Support
+This repository is maintained as a software development portfolio and demonstration project.
 
-If you encounter any issues or have questions:
+Consult the repository's licensing information before redistributing or reusing its code.
 
-1. Check the existing issues in the repository
-2. Create a new issue with detailed information
-3. Include steps to reproduce the problem
-4. Provide relevant error messages and logs
+## 📬 Contact
+
+**Sophia Val-Izevbigie**
+
+[GitHub](https://github.com/TheeValcode) · [Email](mailto:sophiavalizevbigie@gmail.com)
 
 ---
 
-**Built with ❤️ for learning and demonstration purposes**
+<div align="center">
+
+**Built with React, TypeScript, Node.js, Express, and SQLite.**
+
+</div>
