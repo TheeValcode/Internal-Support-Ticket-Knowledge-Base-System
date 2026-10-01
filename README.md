@@ -85,6 +85,55 @@ A centralized platform for managing support requests, tracking issues, and organ
 - **Tailwind CSS** for styling
 - **Context API** for state management
 
+
+## 🏗️ Architecture Overview
+
+The application follows a client-server architecture, with a React frontend communicating with an Express REST API.
+
+```text
+                  USER
+                    |
+                    v
+        +-----------------------+
+        | React + TypeScript    |
+        | Frontend (Port 3000)  |
+        +-----------------------+
+                    |
+                    | HTTP / REST API
+                    | JWT Bearer Token
+                    v
+        +-----------------------+
+        | Node.js + Express     |
+        | Backend (Port 5000)   |
+        +-----------------------+
+                    |
+          +---------+---------+
+          |                   |
+          v                   v
+  +----------------+  +----------------+
+  | SQLite         |  | Local Uploads  |
+  | Database       |  | File Storage   |
+  +----------------+  +----------------+
+```
+
+### How It Works
+
+1. **Frontend:** React and TypeScript provide the interface for authentication, ticket management, and knowledge-base access.
+2. **API:** Express handles incoming requests, routes them to the relevant handlers, and applies middleware.
+3. **Authentication:** JWT bearer tokens are attached to authenticated API requests.
+4. **Database:** SQLite stores user accounts, support tickets, ticket notes, knowledge-base articles, and attachment records.
+5. **File storage:** Uploaded attachments are stored locally, with their associated records managed by the backend.
+
+### Development Environment
+
+- Frontend: `http://localhost:3000`
+- Backend: `http://localhost:5000`
+- API prefix: `/api`
+- Health check: `http://localhost:5000/health`
+
+The frontend uses Axios for API communication. Vite also provides a development proxy for requests under `/api`.
+
+
 ## 📁 Project Structure
 
 ```
