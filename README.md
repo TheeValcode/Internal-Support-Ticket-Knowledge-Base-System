@@ -132,7 +132,7 @@ A centralized platform for managing support requests, tracking issues, and organ
 1. **Clone the repository**
 
    ```bash
-   git clone <repository-url>
+   git clone https://github.com/TheeValcode/Internal-Support-Ticket-Knowledge-Base-System.git
    cd support-ticket-system
    ```
 
